@@ -5,7 +5,7 @@ tooLowPrompt: .asciiz "Your guess is too low...\n"
 tooHighPrompt: .asciiz "Your guess is too high...\n"	
 successPrompt: .asciiz "Guess is correct, you win! Initiating skynet bootup...\n"
 failPrompt: .asciiz "Out of attempts, the machines win again you petty human!\n"
-tries: .word 200
+tries: .word 5
 	
 .globl main	
 	
@@ -25,7 +25,7 @@ main:
 	
 	jal welcome
 	
-gameLoop:
+   gameLoop:
 	
 	beq $s2, $s3, stateFailure
 	jal getInput
@@ -39,7 +39,8 @@ gameLoop:
 	addi $s3, $s3, 1
 	j gameLoop
 	
-	li $v0, 10
+    #exit guard 
+    li $v0, 10
 	syscall
 	
 	
@@ -48,7 +49,6 @@ gameLoop:
 initRandNum:
 	li $v0, 30
 	syscall
-	
 	li $v0, 42
 	la $a1, 50
 	syscall
@@ -86,7 +86,6 @@ stateSuccess:
 	syscall
 	j exit
 
-
 stateFailure:
 	li $v0, 4
 	la $a0, failPrompt
@@ -94,9 +93,6 @@ stateFailure:
 	j exit
 
 
-printNewline:
-
-
 exit:
 	li $v0, 10
-	syscall	
+	syscall
